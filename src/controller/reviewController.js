@@ -50,7 +50,7 @@ const createReview = async function (req, res) {
     }
 };
 
-// ----------------------------------****----------------------------------***-------------------------------------
+// --------------------updating the review
 
 
 
@@ -131,7 +131,7 @@ const updateReview = async function (req, res) {
 
 
 
-// ------------------------------------------***------------------------------------***-----------------
+// -----------------deleting review by reviewId 
 
 const deleteReviewById = async function (req, res) {
     try {
@@ -171,8 +171,6 @@ const deleteReviewById = async function (req, res) {
     }
 
 }
-
-
 
 module.exports={updateReview,createReview,deleteReviewById }
 

@@ -2,6 +2,8 @@ const userModel =require("../model/userModel")
 const jwt = require("jsonwebtoken")
 const isValidRequestBody= require('../validation/validation')
 
+//-----------------userLogin 
+
 const userLogin = async function(req,res){
     
     let email=req.body.email;
