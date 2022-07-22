@@ -2,7 +2,7 @@ const bookModel = require("../model/bookModel");
 const reviewModel = require("../model/reviewModel");
 const { isValidObjectId } = require("mongoose");
 
-const { isValid, isValidRequestBody,isValidName,regexSpaceChar } = require("../validation/validation");
+const { isValid, isValidRequestBody,isValidName } = require("../validation/validation");
 const mongoose = require('mongoose');
 
 

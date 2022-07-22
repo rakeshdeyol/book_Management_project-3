@@ -150,7 +150,7 @@ const getBookByBookId = async function (req, res) {
     try {
         const bookId = req.params.bookId;
         //    VALIDATION
-        if (!isValidObjectId(bookId)) {
+        if (!isValidOjectId(bookId)) {
             return res.status(400).send({ status: false, message: "userId is Invalid" });
         }
         //   FETCHING BOOK  WITH   BOKK ID
@@ -177,7 +177,7 @@ const updateBook = async function (req, res) {
     try {
         const bookId = req.params.bookId;
         //BOOKID VALIDATIONS
-        if (!isValidObjectId(bookId)) {
+        if (!isValidOjectId(bookId)) {
             return res.status(400).send({ status: false, message: "Enter BookId in Params also Valid Id" });
         };
         //  DOCUMENT EXIST OR NOT IN DB
@@ -265,32 +265,29 @@ const updateBook = async function (req, res) {
 
 //----------------------DELETE books by bookId
 
-const deleteBookId = async (req, res) => {
+
+const deleteBookId = async function (req, res) {
     try {
-        let bookId = req.params.bookId
-        //  bookId is present or not
-        if (!bookId) return res.status(400).send({ status: false, msg: "bookId must be present in param " })
-
-        // bookId is a valid objectId
-        if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, msg: "bookId is not valid" })
-
-        const book = await bookModel.findOne({ _id:reviewId, bookId:bookId, isDeleted: false })
-        if (!book) return res.status(404).send({ status: false, msg: "book not exist or allerady deleted" })
-
-        let verifyToken = req.loggedInUser
-        if (verifyToken != userId) return res.status(403).send({ status: false, msg: "You are not authorize to createBook from another userId" });
-
-        // set the isDeleted true of that book with deleted date
-        await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } })
-         await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
-        return res.status(200).send({ status: true, message: "Success" })
+        const bookId = req.params.bookId;
+        if (!isValidOjectId(bookId)) {
+            return res.status(400).send({ status: false, message: "Enter BookId in Params also Valid Id" })
+        }
+        const existBook = await bookModel.findOne({ _id: bookId, isDeleted: false });
+        if (!existBook) {
+            return res.status(404).send({ status: false, message: "Book not Found ,Allready Deletd With given id" });
+        }
+        // CHECKING USER AUTHORIZATION
+        if (req.loggedInUser != existBook.userId) {
+            return res.status(403).send({ status: false, message: "Unauthorize To Make Changes" })
+        }
+        deletedAt = Date.now();
+        const updatedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: deletedAt } }, { new: true });
+        res.status(200).send({ status: true, message: "Successfully Deleted" })
     }
     catch (err) {
-        console.log(err)
-        return res.status(500).send({ status: false, msg: "error.message" })
+        res.status(500).send({ status: false, message: err.message })
     }
-}
-
+};
 
 module.exports = { createBookDoc, getBooks, getBookByBookId, updateBook, deleteBookId }
 

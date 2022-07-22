@@ -5,7 +5,7 @@ const isValidRequestBody= require('../validation/validation')
 //-----------------userLogin 
 
 const userLogin = async function(req,res){
-    
+    try{
     let email=req.body.email;
     let password=req.body.password
     //if (!(isValidRequestBody(data))) return res.status(400).send({ status: false, msg: "data is empty" });
@@ -17,7 +17,10 @@ const userLogin = async function(req,res){
     
 
     let token = jwt.sign(
-        { userId: user._id.toString(), iat: Math.floor(new Date().getTime() / 1000) },
+        {
+             userId: user._id.toString(), 
+             iat: Math.floor(new Date().getTime() / 1000)
+         },
 
         "project_3_Group-64", { expiresIn:"6000s" }
     );
@@ -38,6 +41,10 @@ const userLogin = async function(req,res){
     //     res.setHeader("x-api-key",token)
     //     return res.status(201).send({status:true,msg:"  sucessfully login",token: token})
         
-    }
+}
+catch (error) {
+    return res.status(500).send({ status: false, message: error.message })
+}
+};
 
     module.exports.userLogin = userLogin;
